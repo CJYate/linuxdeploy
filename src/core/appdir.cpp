@@ -763,11 +763,26 @@ namespace linuxdeploy {
                 // for dirEntry in $appIconDirs; do icons="$icons `ls $dirEntry/*.{svg,png,xpm}`"; done
                 std::vector<fs::path> icons;
                 for (const auto& dir : appIconDirs) {
+                    
+                    ldLog() << "deployedIconPaths iterating over directories: " << dir.path().string() << std::endl;
+
                     forEachInDirectory(dir, false, [&icons](const fs::directory_entry& dirEntry) {
+                         
+                    ldLog() << "deployedIconPaths iterating over dirEntries: " << dirEntry.path().string() << std::endl;
+
                         const auto extension = util::strLower(dirEntry.path().extension().string());
+                        
+                        ldLog() << "deployedIconPaths extension " << extension << std::endl;
+
+                        ldLog() << "deployedIconPaths  fs::is_regular_file(dirEntry.status())? " <<  fs::is_regular_file(dirEntry.status()) << std::endl;
+
                         if ((extension == ".svg" || extension == ".png" || extension == ".xpm")
                             && fs::is_regular_file(dirEntry.status()))
+                        {
+                            ldLog() << "File is svg, png or xpm and regular file, adding to icons collection" << std::endl;
+
                             icons.emplace_back(dirEntry.path());
+                        }
                     });
                 }
                 return icons;
